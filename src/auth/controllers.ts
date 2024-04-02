@@ -18,7 +18,6 @@ const userLogin = (req: Request, res: Response) => {
     queries.CHECK_USER_EXISTENCE,
     [username, password],
     (err, result) => {
-      console.log(result.rows);
       if (err) throw err;
       if (result.rows.length) {
         const user:UserDetails = result.rows[0];
