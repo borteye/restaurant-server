@@ -15,32 +15,23 @@ const getDishes = (req: Request, res: Response) => {
 
 const getCountryDish = (req: Request, res: Response) => {
   const { name, countryid }: CountryDetails = req.body;
-
-  pool.query(
-    queries.COUNTRY_EXISTENCE,
-    [name, countryid],
-    (err: Error, result: any) => {
-      if (err) throw err;
-      console.log(err);
-      console.log(result);
-      if (result.rows.length) {
-        pool.query(queries.COUNTRY_DISH, [countryid], (err, result) => {
-          if (err) throw err;
-          console.log(err);
-          console.log(result);
-          if (result.rows.length) {
-            const countryDish: DishInfo[] = result.rows;
-            console.log(countryDish);
-            res.status(200).json(countryDish);
-          } else if (!result.rows.length) {
-            res.json({ error: "No content found" });
-          }
-        });
-      } else if (!result.rows.length) {
-        res.status(400).json({ error: "Country not found" });
-      }
+  pool.query(queries.COUNTRY_EXISTENCE, [name, countryid], (err, result) => {
+    if (err) throw err;
+    if (result.rows.length) {
+      pool.query(queries.COUNTRY_DISH, [countryid], (err, result) => {
+        if (err) throw err;
+        if (result.rows.length) {
+          const countryDish: DishInfo[] = result.rows;
+          console.log(countryDish);
+          res.status(200).json(countryDish);
+        } else if (!result.rows.length) {
+          res.json([]);
+        }
+      });
+    } else if (!result.rows.length) {
+      res.status(400).json({ error: "Country not found" });
     }
-  );
+  });
 };
 
 export { getDishes, getCountryDish };
