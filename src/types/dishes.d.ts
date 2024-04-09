@@ -8,6 +8,12 @@ type DishInfo = {
   countryid: number;
 }[];
 
+type Dish = {
+  dishid: number;
+  name: string;
+  price: number;
+  quantity: number;
+  totalPrice: number;
+};
 
-
-export { DishInfo };
+export { DishInfo, Dish };

@@ -1,3 +1,7 @@
-const PLACE_ORDER = "INSERT INTO orders (userid, ordernumber, customer, itemordered, stauts, unitprice, quantity, orderdate, address, totalamount) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) "
+const PLACE_ORDER =
+  "INSERT INTO orders (userid, ordernumber, customer, status, orderdate, address, dishes) VALUES($1, $2, $3, $4, $5, $6, $7) ";
 
-export { PLACE_ORDER };
+const ALL_ORDERS = "SELECT * FROM orders ORDER BY RANDOM() LIMIT 5";
+
+const CUSTOMER_ORDERS = "SELECT * FROM orders WHERE userid = $1";
+export { PLACE_ORDER, ALL_ORDERS, CUSTOMER_ORDERS };
