@@ -50,9 +50,9 @@ const allOrders = async (req: Request, res: Response) => {
 };
 
 const customerOrders = async (req: Request, res: Response) => {
-  const { userid } = req.body;
+  const { id } = req.params;
   try {
-    await pool.query(queries.CUSTOMER_ORDERS, [userid], (err, result) => {
+    await pool.query(queries.CUSTOMER_ORDERS, [id], (err, result) => {
       if (err) {
         console.error("Error placing order:", err);
         res.status(500).json({ error: "Internal Server Error" });
