@@ -26,7 +26,8 @@ const placeOrder = async (req: Request, res: Response) => {
   }
 };
 
-const allOrders = async (req: Request, res: Response) => {
+const orders = async (req: Request, res: Response) => {
+  const { role, id } = req.body;
   try {
     await pool.query(queries.ALL_ORDERS, (err, result) => {
       if (err) {
@@ -50,28 +51,46 @@ const allOrders = async (req: Request, res: Response) => {
 };
 
 const customerOrders = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { id, role } = req.params;
+
   try {
-    await pool.query(queries.CUSTOMER_ORDERS, [id], (err, result) => {
-      if (err) {
-        console.error("Error placing order:", err);
-        res.status(500).json({ error: "Internal Server Error" });
-        return;
-      }
-      if (result.rows.length) {
-        const customerOrder = result.rows;
-        res.status(200).json({
-          result: customerOrder,
-          success: "orders retrieved successfully",
+    role === "admin"
+      ? await pool.query(queries.ALL_ORDERS, (err, result) => {
+          if (err) {
+            console.error("Error placing order:", err);
+            res.status(500).json({ error: "Internal Server Error" });
+            return;
+          }
+          if (result.rows.length) {
+            const orders = result.rows;
+            res.status(200).json({
+              success: "orders retrieved successfully",
+              result: orders,
+            });
+          } else if (!result.rows.length) {
+            res.json({ error: "no orders found" });
+          }
+        })
+      : await pool.query(queries.CUSTOMER_ORDERS, [id], (err, result) => {
+          if (err) {
+            console.error("Error placing order:", err);
+            res.status(500).json({ error: "Internal Server Error" });
+            return;
+          }
+          if (result.rows.length) {
+            const customerOrder = result.rows;
+            res.status(200).json({
+              result: customerOrder,
+              success: "orders retrieved successfully",
+            });
+          } else if (!result.rows.length) {
+            res.json({ error: "no orders found" });
+          }
         });
-      } else if (!result.rows.length) {
-        res.json({ error: "no orders found" });
-      }
-    });
   } catch (err) {
     console.error("Error placing order:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-export { placeOrder, allOrders, customerOrders };
+export { placeOrder, orders, customerOrders };

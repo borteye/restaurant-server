@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import pool from "../../db";
 import * as queries from "./queries";
+import upload from "../multer";
 
 const getCustomer = (req: Request, res: Response) => {
   const { id, role } = req.params;
@@ -59,4 +60,22 @@ const flagCustomer = (req: Request, res: Response) => {
   }
 };
 
-export { getCustomer, flagCustomer };
+const uploadImage = (req: Request, res: Response) => {
+  upload.single("file")(req, res, (err) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    const uploadedFile = req.file;
+
+    if (!uploadedFile) {
+      res.status(400).json({ error: "No file uploaded" });
+      return;
+    }
+    res
+      .status(200)
+      .json({ message: "File uploaded successfully", file: uploadedFile });
+  });
+};
+
+export { getCustomer, flagCustomer, uploadImage };

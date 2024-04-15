@@ -4,7 +4,7 @@ import * as controller from "./controllers";
 const router: Router = express.Router();
 
 router.post("/place-order", controller.placeOrder);
-router.get("/orders", controller.allOrders);
-router.get("/my-orders/:id", controller.customerOrders);
+router.get("/orders", controller.orders);
+router.get("/orders/:role/:id", controller.customerOrders);
 
 export default router;
