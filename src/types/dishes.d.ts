@@ -16,4 +16,8 @@ type Dish = {
   totalPrice: number;
 };
 
-export { DishInfo, Dish };
+interface imageUpload {
+  path: string;
+}
+
+export { DishInfo, Dish, imageUpload };

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import pool from "../../db";
 import * as queries from "./queries";
 import { Dish } from "../types/dishes";
+import { uploadImage } from "../utils";
 
 const placeOrder = async (req: Request, res: Response) => {
   const { userid, ordernumber, customer, status, orderdate, address, dishes } =

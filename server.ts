@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
+import bodyParser from "body-parser";
 import authRouters from "./src/auth/routers";
 import countryRouter from "./src/country/routers";
 import categoryRouter from "./src/category/routers";
@@ -16,6 +17,9 @@ app.use(
     origin: "*",
   })
 );
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello world");

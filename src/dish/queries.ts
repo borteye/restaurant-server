@@ -4,4 +4,7 @@ const COUNTRY_DISH =
 const COUNTRY_EXISTENCE =
   "SELECT * FROM countries WHERE name = $1 AND countryid = $2 ";
 
-export { DISHES, COUNTRY_EXISTENCE, COUNTRY_DISH };
+const ADD_DISH =
+  "INSERT INTO dishes (name, available, description, price, categoryid, countryid, imageUrl) VALUES ($1, $2, $3, $4, $5, $6, $7)";
+
+export { DISHES, COUNTRY_EXISTENCE, COUNTRY_DISH, ADD_DISH };

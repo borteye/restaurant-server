@@ -4,6 +4,7 @@ import * as controller from "./controllers";
 const router: Router = express.Router();
 
 router.get("/all-dishes", controller.getDishes);
-router.post("/dishes/:name/:id", controller.getCountryDish);
+router.get("/dishes/:id", controller.getCountryDish);
+router.post("/add-dish", controller.addDish);
 
 export default router;

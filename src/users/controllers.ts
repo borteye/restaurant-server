@@ -61,6 +61,7 @@ const flagCustomer = (req: Request, res: Response) => {
 };
 
 const uploadImage = (req: Request, res: Response) => {
+  console.log("hii: ", req.file);
   upload.single("file")(req, res, (err) => {
     if (err) {
       res.status(500).json({ error: err.message });

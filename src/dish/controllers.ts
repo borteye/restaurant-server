@@ -1,8 +1,9 @@
 import { Request, Response, json } from "express";
 import pool from "../../db";
 import * as queries from "./queries";
-import { DishInfo } from "../types/dishes";
+import { DishInfo, imageUpload } from "../types/dishes";
 import { CountryDetails } from "../types/country";
+import { uploadImage } from "../utils";
 
 const getDishes = (req: Request, res: Response) => {
   pool.query(queries.DISHES, (err, result) => {
@@ -14,24 +15,45 @@ const getDishes = (req: Request, res: Response) => {
 };
 
 const getCountryDish = (req: Request, res: Response) => {
-  const { name, countryid }: CountryDetails = req.body;
-  pool.query(queries.COUNTRY_EXISTENCE, [name, countryid], (err, result) => {
+  const { id } = req.params;
+  pool.query(queries.COUNTRY_DISH, [id], (err, result) => {
     if (err) throw err;
     if (result.rows.length) {
-      pool.query(queries.COUNTRY_DISH, [countryid], (err, result) => {
-        if (err) throw err;
-        if (result.rows.length) {
-          const countryDish: DishInfo[] = result.rows;
-          console.log(countryDish);
-          res.status(200).json(countryDish);
-        } else if (!result.rows.length) {
-          res.json([]);
-        }
-      });
+      const countryDish: DishInfo[] = result.rows;
+
+      res.status(200).json(countryDish);
     } else if (!result.rows.length) {
-      res.status(400).json({ error: "Country not found" });
+      res.json([]);
     }
   });
 };
 
-export { getDishes, getCountryDish };
+const addDish = async (req: Request, res: Response) => {
+  const imageUrl = (await uploadImage(req, res)) as imageUpload;
+  const { dishName, dishPrice, dishAvailable, country, category, description } =
+    req.body;
+  pool.query(
+    queries.ADD_DISH,
+    [
+      dishName,
+      dishAvailable,
+      description,
+      dishPrice,
+      category,
+      country,
+      imageUrl.path,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error placing order:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+        return;
+      }
+      res.status(200).json({
+        success: "Dish successfully added",
+      });
+    }
+  );
+};
+
+export { getDishes, getCountryDish, addDish };
