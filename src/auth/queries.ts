@@ -8,7 +8,7 @@ const CHECK_EXISTENCE =
 const USER_LOGIN = "SELECT * FROM users WHERE username = $1 AND password = $2";
 const GET_USER_BY_ID = "SELECT * FROM users WHERE id = $1";
 const ADD_USER =
-  "INSERT INTO users (username, email, password) VALUES ( $1, $2, $3)";
+  "INSERT INTO users (username, email, password, phone_number, gender) VALUES ( $1, $2, $3, $4, $5)";
 
 export {
   CHECK_ACTIVE_USERS,

@@ -14,18 +14,27 @@ const getDishes = (req: Request, res: Response) => {
   });
 };
 
-const getCountryDish = (req: Request, res: Response) => {
+const getCountryDish = async (req: Request, res: Response) => {
   const { id } = req.params;
-  pool.query(queries.COUNTRY_DISH, [id], (err, result) => {
-    if (err) throw err;
-    if (result.rows.length) {
-      const countryDish: DishInfo[] = result.rows;
+  const isId = id !== "null";
+  if (!isId) {
+    return res.status(404).json({ error: "Not found" });
+  }
+  try {
+    isId &&
+      pool.query(queries.COUNTRY_DISH, [id], (err, result) => {
+        if (result.rows.length) {
+          const countryDish: DishInfo[] = result.rows;
 
-      res.status(200).json(countryDish);
-    } else if (!result.rows.length) {
-      res.json([]);
-    }
-  });
+          res.status(200).json(countryDish);
+        } else if (!result.rows.length) {
+          res.json([]);
+        }
+      });
+  } catch (error) {
+    console.error("Error retrieving customer statistics:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
 
 const addDish = async (req: Request, res: Response) => {

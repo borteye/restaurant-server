@@ -9,5 +9,7 @@ interface UserDetails {
   username: string;
   role: string;
   password: string;
+  phone_number: string;
+  gender: string;
 }
 export { UserInfo, UserDetails };

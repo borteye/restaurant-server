@@ -6,5 +6,6 @@ const router: Router = express.Router();
 router.post("/place-order", controller.placeOrder);
 router.get("/orders", controller.orders);
 router.get("/orders/:role/:id", controller.customerOrders);
+router.get("/orderStatistics", controller.orderStatistics);
 
 export default router;

@@ -3,7 +3,7 @@ import pool from "../../db";
 import * as queries from "./queries";
 import upload from "../multer";
 
-const getCustomer = (req: Request, res: Response) => {
+const getCustomers = (req: Request, res: Response) => {
   const { id, role } = req.params;
   try {
     pool.query(queries.CHECK_USER_ROLE, [id, role], (err, result) => {
@@ -79,4 +79,31 @@ const uploadImage = (req: Request, res: Response) => {
   });
 };
 
-export { getCustomer, flagCustomer, uploadImage };
+const customerStatistics = async (req: Request, res: Response) => {
+  try {
+    const [
+      totalCustomersResult,
+      activeCustomersResult,
+      archivedCustomersResult,
+    ] = await Promise.all([
+      pool.query(queries.TOTAL_CUSTOMERS),
+      pool.query(queries.ACTIVE_CUSTOMERS),
+      pool.query(queries.ARCHIVED_CUSTOMERS),
+    ]);
+
+    const totalCustomers = parseInt(totalCustomersResult.rows[0].count);
+    const activeCustomers = parseInt(activeCustomersResult.rows[0].count);
+    const archivedCustomers = parseInt(archivedCustomersResult.rows[0].count);
+
+    res.json([
+      { title: "Total Customers", number: totalCustomers },
+      { title: "Active Now", number: activeCustomers },
+      { title: "Archived Customers", number: archivedCustomers },
+    ]);
+  } catch (error) {
+    console.error("Error retrieving customer statistics:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export { getCustomers, flagCustomer, uploadImage, customerStatistics };

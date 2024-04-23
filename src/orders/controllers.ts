@@ -53,7 +53,6 @@ const orders = async (req: Request, res: Response) => {
 
 const customerOrders = async (req: Request, res: Response) => {
   const { id, role } = req.params;
-
   try {
     role === "admin"
       ? await pool.query(queries.ALL_ORDERS, (err, result) => {
@@ -94,4 +93,24 @@ const customerOrders = async (req: Request, res: Response) => {
   }
 };
 
-export { placeOrder, orders, customerOrders };
+const orderStatistics = async (req: Request, res: Response) => {
+  try {
+    const [totalOrdersResult, completedOrdersResult] = await Promise.all([
+      pool.query(queries.TOTAL_ORDERS),
+      pool.query(queries.COMPLETED_ORDERS),
+    ]);
+
+    const totalOrders = parseInt(totalOrdersResult.rows[0].count);
+    const completedOrders = parseInt(completedOrdersResult.rows[0].count);
+
+    res.json([
+      { title: "Total Orders", number: totalOrders, color: "#0FA5DC" },
+      { title: "Complete Orders", number: completedOrders, color: "#23BAA6" },
+    ]);
+  } catch (err) {
+    console.error("Error placing order:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export { placeOrder, orders, customerOrders, orderStatistics };

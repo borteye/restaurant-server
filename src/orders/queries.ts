@@ -4,4 +4,14 @@ const PLACE_ORDER =
 const ALL_ORDERS = "SELECT * FROM orders";
 
 const CUSTOMER_ORDERS = "SELECT * FROM orders WHERE userid = $1";
-export { PLACE_ORDER, ALL_ORDERS, CUSTOMER_ORDERS };
+
+const TOTAL_ORDERS = "SELECT COUNT(*) FROM orders";
+const COMPLETED_ORDERS =
+  "SELECT COUNT(*) FROM orders WHERE status = 'Complete'";
+export {
+  ALL_ORDERS,
+  COMPLETED_ORDERS,
+  CUSTOMER_ORDERS,
+  PLACE_ORDER,
+  TOTAL_ORDERS,
+};

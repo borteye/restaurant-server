@@ -38,7 +38,8 @@ const userLogin = (req: Request, res: Response) => {
 };
 
 const registerUser = (req: Request, res: Response) => {
-  const { username, email, password }: UserDetails = req.body;
+  const { username, email, password, phone_number, gender }: UserDetails =
+    req.body;
   pool.query(queries.CHECK_EXISTENCE, [username, email], (err, result) => {
     if (err) throw err;
     if (result.rows.length) {
@@ -46,7 +47,7 @@ const registerUser = (req: Request, res: Response) => {
     } else if (!result.rows.length) {
       pool.query(
         queries.ADD_USER,
-        [username, email, password],
+        [username, email, password, phone_number, gender],
         (err, result) => {
           console.log(result);
           if (err) {
