@@ -1,8 +1,7 @@
 import upload from "./multer";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
 export const uploadImage = (req: Request, res: Response) => {
-  console.log("check:", req.file);
   return new Promise((resolve, reject) => {
     upload.single("file")(req, res, (err) => {
       if (err) {
@@ -11,20 +10,13 @@ export const uploadImage = (req: Request, res: Response) => {
         return;
       }
 
-      const uploadedFile = req.file;
-
-      if (!uploadedFile) {
+      if (!req.file) {
         res.status(400).json({ error: "No file uploaded" });
         resolve(null);
         return;
       }
 
-      res.status(200).json({
-        message: "File uploaded successfully",
-        file: uploadedFile,
-      });
-
-      resolve(uploadedFile);
+      resolve(req.file);
     });
   });
 };
